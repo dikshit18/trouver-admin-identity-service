@@ -16,7 +16,7 @@ phases:
       nodejs: 12
     commands:
       - npm install
-  pre-build:
+  pre_build:
     commands:
       - echo Staring the pre build stage
       - touch .env
