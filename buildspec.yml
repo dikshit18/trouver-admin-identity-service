@@ -20,8 +20,8 @@ phases:
     commands:
       - echo Staring the pre build stage
       - touch .env
-      - echo "USERPOOL_ID=$USERPOOL_ID" >> .env
-      - echo "USERPOOL_CLIENT_ID=$USERPOOL_CLIENT_ID" >> .env
+      - echo "USER_POOL_ID=$USERPOOL_ID" >> .env
+      - echo "USER_POOL_CLIENT_ID=$USERPOOL_CLIENT_ID" >> .env
       - echo "ADMIN_TABLE=$ADMIN_TABLE" >> .env
       - echo "ADMIN_SESSIONS_TABLE=$ADMIN_SESSIONS_TABLE" >> .env
       - echo "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" >> .env
