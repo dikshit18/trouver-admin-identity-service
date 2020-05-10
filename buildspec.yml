@@ -36,4 +36,4 @@ phases:
   post_build:
     commands:
       - echo deploying lambda function
-      - aws lambda update-function-code --function-name  $LAMBDA_FUNCTION_NAME --s3-bucket s3://codebuild-trouver/ --s3-key lambda_code.zip
+      - aws lambda update-function-code --function-name  $LAMBDA_FUNCTION_NAME --s3-bucket s3://codebuild-trouver --s3-key lambda_code.zip
