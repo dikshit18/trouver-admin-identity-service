@@ -1,28 +1,30 @@
-require('dotenv').config();
 const {dynamoDb} = require('../dbConfig/dynamoDb');
 const {cognito} = require('../cognitoConfig/cognito');
 const {validateSchema} = require('../utils/validator');
 const {errorCodes, successCodes} = require('../utils/responseCodes');
 const {schema} = require('../utils/schema');
+const {v4: uuidv4} = require('uuid');
 const moment = require('moment');
-const signUp = async (req, res) => {
+const changePassword = async (req, res) => {
   try {
-    await validateSchema(req.body, schema.signUpSchema);
-    const {email, password, firstName, lastName} = req.body;
+    await validateSchema(req.body, schema.changePasswordSchema);
+    const {email, password} = req.body;
     if (await checkIfUserExists(email)) {
-      const response = errorCodes['userAlreadyExists'];
+      const tokens = await cognito.logIn(email, password);
+      await addSessionDetails(tokens);
+      const response = successCodes['logInSuccess'];
+      return res.status(response.statusCode).send({
+        statusCode: response.statusCode,
+        code: response.code,
+        tokens
+      });
+    } else {
+      const response = errorCodes['userNotFound'];
       return res.status(response.statusCode).send({
         statusCode: response.statusCode,
         code: response.code
       });
     }
-    const cognitoSignUp = await cognito.signUp(email, password);
-    await addAdminDetails(firstName, lastName, email, cognitoSignUp.UserSub);
-    const response = successCodes['signUpSuccess'];
-    return res.status(response.statusCode).send({
-      statusCode: response.statusCode,
-      code: response.code
-    });
   } catch (e) {
     //Needed to be defined again
     if (e.code === 'schemaError') {
@@ -54,17 +56,15 @@ const checkIfUserExists = async email => {
     return true;
   } else return false;
 };
-const addAdminDetails = async (firstName, lastName, email, sub) => {
+
+const addSessionDetails = async ({idToken, refreshToken}) => {
   const params = {
-    TableName: process.env.ADMIN_TABLE,
-    Item: {
-      created: moment.utc().format(),
-      firstName,
-      lastName,
-      email,
-      sub
-    }
+    sessionId: uuidv4(),
+    idToken,
+    refreshToken,
+    created: moment.utc().format()
   };
   await dynamoDb.create(params);
+  return;
 };
-module.exports = {signUp};
+module.exports = {changePassword};

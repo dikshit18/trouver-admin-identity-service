@@ -14,7 +14,7 @@ const schema = (() => {
       })
       .unknown(false),
 
-    signInSchema: Joi.object()
+    logInSchema: Joi.object()
       .keys({
         email: Joi.string()
           .email()

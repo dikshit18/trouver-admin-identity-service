@@ -3,7 +3,7 @@ const successCodes = {
     code: 101,
     statusCode: 201
   },
-  signInSuccess: {
+  logInSuccess: {
     code: 102,
     statusCode: 200
   },

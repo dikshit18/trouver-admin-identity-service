@@ -10,13 +10,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient({
 });
 const dynamoDb = (() => {
   return {
-    get: email => {
-      var params = {
-        TableName: process.env.ADMIN_TABLE,
-        Key: {
-          email
-        }
-      };
+    get: params => {
       return new Promise((res, rej) => {
         documentClient.get(params, (err, data) => {
           if (err) {
@@ -31,6 +25,7 @@ const dynamoDb = (() => {
     },
     create: params => {
       return new Promise((res, rej) => {
+        console.log('params are ...', params);
         documentClient.put(params, (err, data) => {
           if (err) {
             console.log('Error while creating Admin details... ', err);

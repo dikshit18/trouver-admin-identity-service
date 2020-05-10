@@ -1,5 +1,5 @@
-require('dotenv').config();
 const AWS = require('aws-sdk');
+require('dotenv').config();
 AWS.config.update({
   region: 'ap-south-1',
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -7,7 +7,7 @@ AWS.config.update({
 });
 const cognitoClient = new AWS.CognitoIdentityServiceProvider({apiVersion: '2016-04-18'});
 /*
-Module patter interface the methods from the global space and provide modularity
+Module pattern interface the methods from the global space and provide modularity
 */
 const cognito = (() => {
   return {
@@ -32,10 +32,11 @@ const cognito = (() => {
         });
       });
     },
-    signIn: (USERNAME, PASSWORD) => {
+    logIn: (USERNAME, PASSWORD) => {
       const params = {
         AuthFlow: 'ADMIN_NO_SRP_AUTH',
         UserPoolId: process.env.USER_POOL_ID,
+        ClientId: process.env.USER_POOL_CLIENT_ID,
         AuthParameters: {
           USERNAME,
           PASSWORD
@@ -47,7 +48,7 @@ const cognito = (() => {
             console.log('Error while signing in... ', err);
           } else {
             console.log('SignIn done.');
-            res(data);
+            res(data.AuthenticationResult);
           }
         });
       });
