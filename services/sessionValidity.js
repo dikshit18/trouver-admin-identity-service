@@ -3,6 +3,7 @@ const {errorCodes, successCodes} = require('../utils/responseCodes');
 const sessionValidity = async (req, res) => {
   //To be encrypted later
   const {sessionId} = req.query;
+  //Validation additoion pending
   const params = {
     TableName: process.env.ADMIN_SESSIONS_TABLE,
     KeyConditionExpression: 'sessionId = :id',
