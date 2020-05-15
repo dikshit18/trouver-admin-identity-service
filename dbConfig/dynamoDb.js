@@ -49,6 +49,19 @@ const dynamoDb = (() => {
           }
         });
       });
+    },
+    query: params => {
+      return new Promise((res, rej) => {
+        documentClient.query(params, (err, data) => {
+          if (err) {
+            console.log('Error while querying database... ', err);
+            rej(err);
+          } else {
+            console.log('Succesfully queried database... ', data);
+            res(data);
+          }
+        });
+      });
     }
   };
 })();

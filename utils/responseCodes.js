@@ -14,6 +14,10 @@ const successCodes = {
   forgotPasswordSuccess: {
     code: 104,
     statusCode: 200
+  },
+  sessionValid: {
+    code: 105,
+    statusCode: 200
   }
 };
 
@@ -33,6 +37,10 @@ const errorCodes = {
   userAlreadyExists: {
     statusCode: 400,
     code: 154
+  },
+  sessionInvalid: {
+    statusCode: 401,
+    code: 155
   }
 };
 module.exports = {errorCodes, successCodes};
