@@ -46,6 +46,7 @@ const cognito = (() => {
         cognitoClient.adminInitiateAuth(params, (err, data) => {
           if (err) {
             console.log('Error while signing in... ', err);
+            rej(err);
           } else {
             console.log('SignIn done.');
             res(data.AuthenticationResult);
@@ -56,7 +57,24 @@ const cognito = (() => {
     signOut: () => {
       //Not implementing, as cognito does not expire tokens on Logout
     },
-    changePassword: () => {},
+    changePassword: (PreviousPassword, ProposedPassword, AccessToken) => {
+      const params = {
+        PreviousPassword,
+        ProposedPassword,
+        AccessToken
+      };
+      return new Promise((res, rej) => {
+        cognitoClient.changePassword(params, err => {
+          if (err) {
+            console.log('Error while changing password...', err);
+            rej(err);
+          } else {
+            console.log('Password changed');
+            res();
+          }
+        });
+      });
+    },
     forgotPassword: () => {}
   };
 })();

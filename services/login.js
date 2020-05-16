@@ -58,7 +58,7 @@ const checkIfUserExists = async email => {
   } else return false;
 };
 
-const addSessionDetails = async ({IdToken, RefreshToken}, email) => {
+const addSessionDetails = async ({IdToken, RefreshToken, AccessToken}, email) => {
   const sessionId = uuidv4();
   const params = {
     TableName: process.env.ADMIN_SESSIONS_TABLE,
@@ -66,6 +66,7 @@ const addSessionDetails = async ({IdToken, RefreshToken}, email) => {
       sessionId,
       idToken: IdToken,
       refreshToken: RefreshToken,
+      accessToken: AccessToken,
       email,
       created: moment.utc().format()
     }

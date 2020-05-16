@@ -26,7 +26,8 @@ const schema = (() => {
     changePasswordSchema: Joi.object()
       .keys({
         oldPassword: Joi.string().required(),
-        newPassword: Joi.string().required()
+        newPassword: Joi.string().required(),
+        sessionId: JoiGuidV4.required()
       })
       .unknown(false)
   };

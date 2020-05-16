@@ -41,6 +41,10 @@ const errorCodes = {
   sessionInvalid: {
     statusCode: 401,
     code: 155
+  },
+  changePasswordFailed: {
+    statusCode: 400,
+    code: 156
   }
 };
 module.exports = {errorCodes, successCodes};

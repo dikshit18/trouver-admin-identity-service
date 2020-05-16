@@ -8,18 +8,19 @@ const moment = require('moment');
 const changePassword = async (req, res) => {
   try {
     await validateSchema(req.body, schema.changePasswordSchema);
-    const {email, password} = req.body;
-    if (await checkIfUserExists(email)) {
-      const tokens = await cognito.logIn(email, password);
-      await addSessionDetails(tokens);
-      const response = successCodes['logInSuccess'];
+    const {oldPassword, newPassword, sessionId} = req.body;
+    const {authorization: idToken} = req.headers;
+    //const {email} = event.requestContext.authorizer.claims;
+    const tokenResponse = await checkIfSessionExists(sessionId, idToken);
+    if (tokenResponse.token) {
+      await cognito.changePassword(oldPassword, newPassword, tokenResponse.token);
+      const response = successCodes['changePasswordSuccess'];
       return res.status(response.statusCode).send({
         statusCode: response.statusCode,
-        code: response.code,
-        tokens
+        code: response.code
       });
     } else {
-      const response = errorCodes['userNotFound'];
+      const response = errorCodes['changePasswordFailed'];
       return res.status(response.statusCode).send({
         statusCode: response.statusCode,
         code: response.code
@@ -44,27 +45,21 @@ const changePassword = async (req, res) => {
   }
 };
 
-const checkIfUserExists = async email => {
+const checkIfSessionExists = async (sessionId, idToken) => {
   const params = {
-    TableName: process.env.ADMIN_TABLE,
-    Key: {
-      email
-    }
+    TableName: process.env.ADMIN_SESSIONS_TABLE,
+    KeyConditionExpression: 'sessionId = :id',
+    FilterExpression: 'idToken = :token',
+    ExpressionAttributeValues: {
+      ':id': sessionId,
+      ':token': idToken
+    },
+    ProjectionExpression: 'accessToken'
   };
-  const doesUserExists = await dynamoDb.get(params);
-  if (doesUserExists.Item) {
-    return true;
-  } else return false;
-};
-
-const addSessionDetails = async ({idToken, refreshToken}) => {
-  const params = {
-    sessionId: uuidv4(),
-    idToken,
-    refreshToken,
-    created: moment.utc().format()
-  };
-  await dynamoDb.create(params);
-  return;
+  const sessionDetails = await dynamoDb.query(params);
+  console.log(sessionDetails);
+  if (sessionDetails.Items.length) {
+    return {token: sessionDetails.Items[0].accessToken};
+  } else return {};
 };
 module.exports = {changePassword};
