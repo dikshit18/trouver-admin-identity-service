@@ -18,6 +18,10 @@ const successCodes = {
   sessionValid: {
     code: 105,
     statusCode: 200
+  },
+  logoutSuccess: {
+    code: 106,
+    statusCode: 200
   }
 };
 

@@ -29,7 +29,10 @@ const schema = (() => {
         newPassword: Joi.string().required(),
         sessionId: JoiGuidV4.required()
       })
-      .unknown(false)
+      .unknown(false),
+    logoutSchema: Joi.object().keys({
+      sessionId: JoiGuidV4.required()
+    })
   };
 })();
 
