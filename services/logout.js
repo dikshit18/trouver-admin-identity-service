@@ -18,6 +18,7 @@ const apigwManagementApi = new AWS.ApiGatewayManagementApi({
 
 const logout = async (req, res) => {
   try {
+    console.log('I ma in logout service', req.params);
     await validateSchema(req.params, schema.logoutSchema);
     const sessionId = req.params.sessionId;
     await deleteSession(sessionId);
