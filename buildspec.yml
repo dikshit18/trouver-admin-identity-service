@@ -4,6 +4,8 @@ env:
     ADMIN_TABLE: admin-service
     ADMIN_SESSIONS_TABLE: admin-service-sessions
     LAMBDA_FUNCTION_NAME: admin-service-function
+    ADMIN_WS_CONNECTION_TABLE: admin-service-websocket-connections
+    WEB_SOCKET_ENDPOINT: https://x15lra2p45.execute-api.ap-south-1.amazonaws.com/dev
   parameter-store:
     USERPOOL_ID: '/dev/USER_POOL_ID'
     USERPOOL_CLIENT_ID: '/dev/USER_POOL_CLIENTID'
