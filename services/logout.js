@@ -1,7 +1,6 @@
 require('dotenv').config();
 const AWS = require('aws-sdk');
 const {dynamoDb} = require('../dbConfig/dynamoDb');
-const {cognito} = require('../cognitoConfig/cognito');
 const {validateSchema} = require('../utils/validator');
 const {errorCodes, successCodes} = require('../utils/responseCodes');
 const {schema} = require('../utils/schema');
@@ -18,7 +17,6 @@ const apigwManagementApi = new AWS.ApiGatewayManagementApi({
 
 const logout = async (req, res) => {
   try {
-    console.log('I ma in logout service', req.params);
     await validateSchema(req.params, schema.logoutSchema);
     const sessionId = req.params.sessionId;
     await deleteSession(sessionId);
@@ -28,7 +26,24 @@ const logout = async (req, res) => {
       statusCode: response.statusCode,
       code: response.code
     });
-  } catch (e) {}
+  } catch (e) {
+    console.log('Error in Logout...', e);
+    //Needed to be defined again
+    if (e.code === 'schemaError') {
+      const response = errorCodes['joi'];
+      return res.status(response.statusCode).send({
+        statusCode: response.statusCode,
+        code: response.code
+      });
+    } else {
+      //default error
+      const response = errorCodes['default'];
+      return res.status(response.statusCode).send({
+        statusCode: response.statusCode,
+        code: response.code
+      });
+    }
+  }
 };
 
 const deleteSession = async sessionId => {
