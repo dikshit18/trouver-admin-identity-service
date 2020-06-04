@@ -70,12 +70,14 @@ const publishToConnectedClients = async sessionId => {
   const connections = await dynamoDb.query(params);
   if (connections.Items.length) {
     const connectionIds = connections.Items.map(session => session.connectionId);
+    console.log('ConnectionIds are... ', connectionIds);
     const logoutMessage = {dispatch: 'logout'};
     for (const id of connectionIds) {
       try {
         await postToClient(id, logoutMessage);
         await deleteInvalidConnections(id); // Since this client is logged out, closing this connection now
       } catch (error) {
+        console.log('Error while sending message to the connected client...', error);
         if (error.code === 'GoneException') {
           await deleteInvalidConnections(id);
         }
