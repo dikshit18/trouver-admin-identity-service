@@ -88,7 +88,7 @@ const errorCodes = {
   },
   detailsFailed: {
     statusCode: 400,
-    code: 162
+    code: 161
   }
 };
 module.exports = {errorCodes, successCodes};
